@@ -1,0 +1,62 @@
+{
+  "name": "TechVolt - Accesorios Tecnológicos",
+  "short_name": "TechVolt",
+  "description": "Tienda de accesorios tecnológicos esenciales para tu día a día.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "lang": "es-MX",
+  "categories": [
+    "shopping",
+    "technology"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Inicio",
+      "short_name": "Inicio",
+      "description": "Página principal de TechVolt",
+      "url": "./",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Catálogo",
+      "short_name": "Catálogo",
+      "description": "Ver todos los productos",
+      "url": "./catalogo",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
