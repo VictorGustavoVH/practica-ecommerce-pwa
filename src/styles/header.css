@@ -1,0 +1,187 @@
+/* ==============================================================================
+   ESTILOS DEL ENCABEZADO (HEADER Y NAVEGACIÓN)
+   ============================================================================== */
+
+.site-header {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: border-color 150ms ease;
+}
+
+.header-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 68px;
+  gap: 20px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 10px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.brand-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  object-fit: contain;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.main-nav a {
+  padding: 7px 15px;
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.main-nav a:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-muted);
+}
+
+.main-nav a.active {
+  color: var(--text-primary);
+  background-color: var(--bg-muted);
+  font-weight: 600;
+}
+
+.menu-button {
+  display: none;
+}
+
+.cart-button {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 8px;
+  min-height: 38px;
+  padding: 5px 9px 5px 13px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 600;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.cart-button:hover {
+  border-color: var(--text-primary);
+  background-color: var(--bg-subtle);
+}
+
+.cart-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.cart-count {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding-inline: 5px;
+  border-radius: var(--radius-pill);
+  color: #ffffff;
+  background: var(--accent-black);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+/* Responsividad del Header */
+@media (max-width: 720px) {
+  .header-container {
+    position: relative;
+    grid-template-columns: 1fr auto auto;
+    min-height: 62px;
+    gap: 12px;
+  }
+
+  .brand-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .main-nav {
+    position: absolute;
+    top: calc(100% + 1px);
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 8px;
+    border: 1px solid var(--border-subtle);
+    border-top: 0;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .main-nav.is-open {
+    display: flex;
+  }
+
+  .main-nav a {
+    border-radius: var(--radius-sm);
+    text-align: left;
+    padding: 9px 14px;
+  }
+
+  .menu-button {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-pill);
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    cursor: pointer;
+  }
+
+  .menu-button:hover {
+    background: var(--bg-subtle);
+  }
+
+  .menu-button svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+
+  .cart-label {
+    display: none;
+  }
+}

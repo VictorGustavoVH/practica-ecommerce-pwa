@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Catálogo oficial de productos y accesorios tecnológicos de TechVolt."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <style>
+      /* Estilos críticos para evitar FOUC y ocultar el carrito antes de cargar el CSS */
+      .cart-panel:not(.is-open), .cart-overlay:not(.is-open) { display: none !important; }
+    </style>
+    <link rel="stylesheet" href="/src/style.css" />
+    <title>Catálogo | TechVolt</title>
+  </head>
+  <body>
+    <!-- Encabezado inyectado dinámicamente por JavaScript -->
+    <header id="site-header" class="site-header"></header>
+
+    <!-- Contenido dinámico del catálogo generado automáticamente desde products.js -->
+    <main id="app" tabindex="-1"></main>
+
+    <!-- Pie de página inyectado dinámicamente por JavaScript -->
+    <footer id="site-footer" class="site-footer"></footer>
+
+    <!-- Panel del Carrito -->
+    <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+    <aside
+      class="cart-panel"
+      id="cart-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-title"
+      aria-hidden="true"
+      inert
+    >
+      <div class="cart-panel-header">
+        <div>
+          <p class="eyebrow">Tu selección</p>
+          <h2 id="cart-title">Carrito</h2>
+        </div>
+        <button class="icon-button" id="cart-close" type="button" aria-label="Cerrar carrito">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="cart-items" id="cart-items"></div>
+
+      <div class="cart-summary" id="cart-summary">
+        <div>
+          <span>Total</span>
+          <strong id="cart-total">$0</strong>
+        </div>
+        <p>Impuestos incluidos. No se realizará ningún pago real.</p>
+      </div>
+    </aside>
+    <p class="sr-only" id="cart-status" role="status" aria-live="polite"></p>
+
+    <!-- Script principal de la aplicación -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

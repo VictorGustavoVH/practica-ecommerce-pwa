@@ -1,125 +1,139 @@
-// Nombre y versión de la caché. Al cambiar de versión se crea una caché nueva.
-const CACHE_NAME = "techvolt-cache-v5";
+// Nombre y version de la memoria cache (al cambiarla fuerza la actualizacion).
+const CACHE_NAME = "techvolt-cache-v9";
 
-// Recursos estáticos disponibles tanto en desarrollo como en producción.
+// Archivos minimos estaticos de la interfaz (App Shell) para funcionar offline.
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./catalogo.html",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./icons/icon-maskable.png",
-  "./images/producto-1.webp",
-  "./images/producto-2.webp",
-  "./images/producto-3.webp",
-  "./images/producto-4.webp",
-  "./images/producto-5.webp",
-  "./images/producto-6.webp"
+  "./icons/icon-maskable.png"
 ];
 
-// Vite sirve estos módulos directamente durante `npm run dev`.
+// Modulos y componentes que Vite sirve directamente durante desarrollo local (npm run dev).
 const DEVELOPMENT_MODULES = [
   "./src/main.js",
   "./src/router.js",
+  "./src/components/layout.js",
+  "./src/components/header.html",
+  "./src/components/footer.html",
   "./src/cart.js",
-  "./src/products.js"
+  "./src/products.js",
+  "./src/style.css",
+  "./src/styles/header.css",
+  "./src/styles/footer.css",
+  "./src/styles/catalogo.css"
 ];
 
-// style.css no se precarga aquí: el <link rel="stylesheet"> permite que Vite
-// lo entregue y lo guarde después con el tipo MIME text/css correcto.
-
-/**
- * Guarda una lista de recursos sin cancelar toda la instalación si uno no existe.
- * Esto permite usar el mismo Service Worker en el servidor de desarrollo y en dist.
- */
+// Guarda una lista de archivos en cache de forma segura sin cancelar si alguno no existe.
 async function cacheAvailableResources(cache, resources) {
+  // Descarga y guarda todos los recursos en paralelo
   await Promise.all(
     resources.map(async (resource) => {
       try {
+        // Intenta agregar el recurso a la cache
         await cache.add(resource);
       } catch {
-        // En producción los módulos de src se sustituyen por archivos en assets.
+        // Si el archivo no existe en el entorno actual, lo ignora silenciosamente
       }
     })
   );
 }
 
-/**
- * Lee el index compilado y encuentra los archivos con hash creados por Vite.
- * Ejemplo: assets/index-AbC123.js. Después los guarda para utilizarlos offline.
- */
+// Lee index.html y catalogo.html para detectar y guardar los archivos compilados con hash generados por Vite.
 async function cacheViteBuildAssets(cache) {
-  const indexResponse = await fetch("./index.html", { cache: "no-store" });
+  const pages = ["./index.html", "./catalogo.html"];
+  for (const page of pages) {
+    try {
+      // 1. Descarga el archivo HTML sin guardar en cache temporal
+      const pageResponse = await fetch(page, { cache: "no-store" });
+      if (!pageResponse.ok) continue;
 
-  if (!indexResponse.ok) return;
+      // 2. Extrae el codigo HTML en formato texto
+      const html = await pageResponse.text();
 
-  const html = await indexResponse.text();
-  const resourcePattern = /(?:src|href)=["']([^"']+)["']/g;
-  const assetUrls = [...html.matchAll(resourcePattern)]
-    .map((match) => new URL(match[1], self.location.href))
-    .filter((url) => url.origin === self.location.origin && url.pathname.includes("/assets/"));
+      // 3. Expresion regular para buscar rutas en etiquetas src="..." o href="..."
+      const resourcePattern = /(?:src|href)=["']([^"']+)["']/g;
 
-  await cacheAvailableResources(cache, assetUrls.map((url) => url.href));
+      // 4. Filtra unicamente las rutas que pertenezcan a la carpeta /assets/ del mismo dominio
+      const assetUrls = [...html.matchAll(resourcePattern)]
+        .map((match) => new URL(match[1], self.location.href))
+        .filter((url) => url.origin === self.location.origin && url.pathname.includes("/assets/"));
+
+      // 5. Guarda todos los archivos compilados encontrados en la cache
+      await cacheAvailableResources(cache, assetUrls.map((url) => url.href));
+    } catch {
+      // Si la pagina no esta disponible, continua con la siguiente
+    }
+  }
 }
 
-// install se ejecuta una vez cuando el navegador detecta esta versión del Service Worker.
+// Evento Install: Se ejecuta al instalar el Service Worker para precargar los recursos esenciales.
 self.addEventListener("install", (event) => {
-  console.log("[Service Worker] Instalando techvolt-cache-v5");
-
+  // Espera a que termine de guardar todo antes de completar la instalacion
   event.waitUntil(
     caches
       .open(CACHE_NAME)
       .then(async (cache) => {
-        // El App Shell contiene la interfaz mínima, manifest, iconos e imágenes.
+        // 1. Guarda los archivos estaticos base del App Shell
         await cache.addAll(APP_SHELL);
-        // En desarrollo se guardan los módulos fuente que Vite sirve directamente.
+        // 2. Guarda modulos y componentes de desarrollo si existen
         await cacheAvailableResources(cache, DEVELOPMENT_MODULES);
-        // En producción se guardan los archivos optimizados generados dentro de assets.
+        // 3. Guarda archivos compilados de produccion si existen
         await cacheViteBuildAssets(cache);
       })
-      // Activa esta versión sin esperar a que se cierren todas las pestañas anteriores.
+      // Activa el Service Worker de inmediato sin esperar a reiniciar la pestaña
       .then(() => self.skipWaiting())
   );
 });
 
-// activate se ejecuta después de instalarse y elimina cachés de versiones anteriores.
+// Evento Activate: Se ejecuta al activar el Service Worker y elimina versiones viejas de cache.
 self.addEventListener("activate", (event) => {
-  console.log("[Service Worker] Activando techvolt-cache-v5");
-
+  // Espera a completar la limpieza de caches obsoletas
   event.waitUntil(
     caches
       .keys()
       .then((cacheNames) => Promise.all(
         cacheNames
-          // Conserva solamente la versión de caché declarada en CACHE_NAME.
+          // Filtra las caches viejas que no coincidan con la version actual
           .filter((cacheName) => cacheName !== CACHE_NAME)
+          // Borra cada cache antigua encontrada
           .map((cacheName) => caches.delete(cacheName))
       ))
-      // Permite que el Service Worker controle inmediatamente las páginas abiertas.
+      // Toma el control inmediato de todas las pestañas abiertas
       .then(() => self.clients.claim())
   );
 });
 
-/**
- * Aplica la estrategia Cache First.
- * 1. Busca la petición en Cache Storage.
- * 2. Si no existe, la solicita a la red y guarda una copia local.
- * 3. Si no hay red y es una navegación, devuelve index.html para que el router SPA
- *    resuelva rutas como /catalogo y /producto/1.
- */
+// Estrategia Cache First con entrega instantánea de navegación (App Shell Architecture).
 async function cacheFirst(request) {
-  // Primera opción: responder inmediatamente con el recurso guardado.
-  const cachedResponse = await caches.match(request);
+  // 1. En navegaciones (cambios de pantalla), entrega el App Shell de inmediato desde caché
+  if (request.mode === "navigate") {
+    const cachedPage = await caches.match(request);
+    if (cachedPage) return cachedPage;
 
+    // Si la ruta solicitada contiene 'catalogo', usa catalogo.html o index.html
+    const isCatalog = request.url.includes("catalogo");
+    const shell = isCatalog
+      ? (await caches.match("./catalogo.html") || await caches.match("./index.html") || await caches.match("./"))
+      : (await caches.match("./index.html") || await caches.match("./") || await caches.match("./catalogo.html"));
+
+    if (shell) return shell;
+  }
+
+  // 2. Busca recursos estáticos (imágenes, scripts, css) en caché
+  const cachedResponse = await caches.match(request);
   if (cachedResponse) {
     return cachedResponse;
   }
 
   try {
-    // Segunda opción: solicitar el recurso porque todavía no está en caché.
+    // 3. Si no está en caché, solicita el recurso a la red
     const networkResponse = await fetch(request);
 
-    // Guardamos únicamente respuestas locales y correctas.
+    // Guarda dinámicamente en caché los recursos solicitados válidos
     if (networkResponse.ok && networkResponse.type === "basic") {
       const cache = await caches.open(CACHE_NAME);
       await cache.put(request, networkResponse.clone());
@@ -127,25 +141,26 @@ async function cacheFirst(request) {
 
     return networkResponse;
   } catch (error) {
-    // Respaldo de la SPA: cualquier ruta visual se reconstruye desde index.html.
+    // 4. Fallback de emergencia si la red falla durante la navegación
     if (request.mode === "navigate") {
-      const appShell = await caches.match("./index.html") || await caches.match("./");
-      if (appShell) return appShell;
+      const fallback = await caches.match("./index.html") || await caches.match("./");
+      if (fallback) return fallback;
     }
 
     throw error;
   }
 }
 
+// Evento Fetch: Intercepta todas las peticiones de red que hace la aplicacion.
 self.addEventListener("fetch", (event) => {
-  // Las mutaciones POST/PUT/DELETE nunca deben tratarse como archivos estáticos.
+  // Ignora peticiones que no sean GET (como POST o PUT)
   if (event.request.method !== "GET") return;
 
   const requestUrl = new URL(event.request.url);
 
-  // No guardamos recursos pertenecientes a otros dominios.
+  // Ignora peticiones hacia servidores o dominios externos
   if (requestUrl.origin !== self.location.origin) return;
 
-  // Entrega al navegador la respuesta obtenida mediante Cache First.
+  // Responde a la peticion usando la estrategia Cache First con guardado dinamico
   event.respondWith(cacheFirst(event.request));
 });

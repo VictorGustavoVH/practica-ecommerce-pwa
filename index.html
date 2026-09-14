@@ -10,67 +10,78 @@
     <meta name="theme-color" content="#ffffff" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/icons/icon-192.png" />
+    <style>
+      /* Estilos críticos para evitar FOUC y ocultar el carrito antes de cargar el CSS */
+      .cart-panel:not(.is-open), .cart-overlay:not(.is-open) { display: none !important; }
+    </style>
     <link rel="stylesheet" href="/src/style.css" />
-    <link rel="preload" as="image" href="/images/producto-1.webp" fetchpriority="high" />
     <title>TechVolt | Tecnología para tu día</title>
   </head>
   <body>
-    <header class="site-header">
-      <div class="header-container">
-        <a class="brand" href="/" aria-label="Ir al inicio de TechVolt">
-          <img class="brand-icon" src="/icons/icon-192.png" alt="" width="28" height="28" />
-          <span>TechVolt</span>
-        </a>
+    <!-- Encabezado inyectado dinámicamente por JavaScript -->
+    <header id="site-header" class="site-header"></header>
 
-        <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
-          <a href="/" data-nav-link>Inicio</a>
-          <a href="/catalogo" data-nav-link>Catálogo</a>
-        </nav>
+    <!-- Contenido del Inicio renderizado por defecto para carga instantánea en PWA móvil -->
+    <main id="app" tabindex="-1">
+      <div class="page-wrapper">
+        <section class="hero section-container">
+          <div class="hero-content">
+            <p class="eyebrow">Tecnología esencial</p>
+            <h1>Mejora tu espacio con los accesorios correctos.</h1>
+            <p class="hero-copy">
+              Descubre productos prácticos para trabajar, crear y mantenerte conectado todos los días.
+            </p>
+            <div class="hero-actions">
+              <a class="button" href="/catalogo">Explorar catálogo</a>
+              <a class="button button-secondary" href="/producto/1">Ver destacado</a>
+            </div>
+          </div>
+          <div class="hero-product">
+            <span class="hero-badge">Producto destacado</span>
+            <a class="product-image-link" href="/producto/1" aria-label="Ver Auriculares Inalámbricos Pro">
+              <img
+                src="/images/producto-1.webp"
+                alt="Auriculares Inalámbricos Pro"
+                width="600"
+                height="600"
+                fetchpriority="high"
+              />
+            </a>
+            <div class="hero-product-info">
+              <div>
+                <p class="hero-product-title">Auriculares Inalámbricos Pro</p>
+                <strong>$1,799</strong>
+              </div>
+              <button class="button button-small add-to-cart" type="button" data-product-id="1">
+                Agregar al carrito
+              </button>
+            </div>
+          </div>
+        </section>
 
-        <button
-          class="menu-button"
-          id="menu-toggle"
-          type="button"
-          aria-label="Abrir menú"
-          aria-controls="main-nav"
-          aria-expanded="false"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16" />
-          </svg>
-        </button>
-
-        <button
-          class="cart-button"
-          id="cart-toggle"
-          type="button"
-          aria-label="Abrir carrito, 0 productos"
-          aria-controls="cart-panel"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 4h2l2.1 9.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L20 7H6" />
-            <circle cx="9" cy="19" r="1.4" />
-            <circle cx="17" cy="19" r="1.4" />
-          </svg>
-          <span class="cart-label">Carrito</span>
-          <span class="cart-count" id="cart-count" aria-hidden="true">0</span>
-        </button>
+        <section class="benefits" aria-label="Beneficios de TechVolt">
+          <div class="section-container benefits-grid">
+            <div>
+              <strong>Productos seleccionados</strong>
+              <span>Accesorios útiles y confiables para tu espacio</span>
+            </div>
+            <div>
+              <strong>Compra sencilla</strong>
+              <span>Encuentra lo que necesitas con total claridad</span>
+            </div>
+            <div>
+              <strong>Siempre disponible</strong>
+              <span>Consulta el catálogo incluso sin conexión a internet</span>
+            </div>
+          </div>
+        </section>
       </div>
-    </header>
+    </main>
 
-    <main id="app" tabindex="-1"></main>
+    <!-- Pie de página inyectado dinámicamente por JavaScript -->
+    <footer id="site-footer" class="site-footer"></footer>
 
-    <footer class="site-footer">
-      <div class="footer-container">
-        <a class="footer-brand" href="/">
-          <img class="footer-brand-icon" src="/icons/icon-192.png" alt="" width="22" height="22" />
-          <span>TechVolt</span>
-        </a>
-        <p>Accesorios tecnológicos para todos los días.</p>
-        <p>&copy; <span id="current-year"></span> TechVolt</p>
-      </div>
-    </footer>
-
+    <!-- Panel del Carrito -->
     <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
     <aside
       class="cart-panel"
@@ -105,6 +116,7 @@
     </aside>
     <p class="sr-only" id="cart-status" role="status" aria-live="polite"></p>
 
+    <!-- Script principal de la aplicación -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

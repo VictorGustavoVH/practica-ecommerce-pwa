@@ -223,7 +223,7 @@ export function getNormalizedPath() {
   const base = import.meta.env.BASE_URL || "/";
   let pathname = window.location.pathname;
 
-  if (base !== "/" && pathname.startsWith(base)) {
+  if (base !== "/" && base !== "./" && pathname.startsWith(base)) {
     pathname = "/" + pathname.slice(base.length);
   }
 
@@ -239,8 +239,8 @@ function currentRoute() {
   const productMatch = path.match(/^\/producto\/(\d+)$/);
 
   if (productMatch) return { name: "detail", id: productMatch[1] };
-  if (path === "/catalogo") return { name: "catalog" };
-  if (path === "/" || path === "") return { name: "home" };
+  if (path === "/catalogo" || path.includes("catalogo")) return { name: "catalog" };
+  if (path === "/" || path === "" || path.includes("index")) return { name: "home" };
 
   return { name: "not-found" };
 }
