@@ -74,3 +74,43 @@ if ("serviceWorker" in navigator) {
 } else {
   console.log("Este navegador no soporta Service Workers.");
 }
+
+// Maneja el clic en el botón de activar o mostrar notificaciones
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest("#btn-notifications");
+  if (!button) return;
+
+  // Comprueba si el navegador soporta notificaciones
+  if (!("Notification" in window)) {
+    alert("Este navegador no soporta notificaciones.");
+    return;
+  }
+
+  // Pide permiso al usuario para mostrar notificaciones
+  const permission = await Notification.requestPermission();
+
+  // Solo continuamos si el usuario permitió las notificaciones
+  if (permission === "granted") {
+    // Cambia el texto del botón al aceptar el permiso
+    button.textContent = "Mostrar notificación";
+
+    // Espera a que el Service Worker esté listo
+    const registration = await navigator.serviceWorker.ready;
+
+    // Envía un mensaje al Service Worker
+    registration.active.postMessage({
+      type: "SHOW_TEST_NOTIFICATION"
+    });
+  } else if (permission === "denied") {
+    alert("Las notificaciones fueron bloqueadas en este navegador.");
+  }
+});
+
+// Actualiza el texto del botón si el permiso ya fue concedido previamente
+if ("Notification" in window && Notification.permission === "granted") {
+  const notificationButton = document.querySelector("#btn-notifications");
+  if (notificationButton) {
+    notificationButton.textContent = "Mostrar notificación";
+  }
+}
+

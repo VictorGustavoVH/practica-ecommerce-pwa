@@ -34,6 +34,11 @@ function productCard(product, highPriority = false) {
 function homeView() {
   const featured = PRODUCTOS[0];
 
+  const notificationButtonText =
+    typeof Notification !== "undefined" && Notification.permission === "granted"
+      ? "Mostrar notificación"
+      : "Activar notificaciones";
+
   return `
     <div class="page-wrapper">
       <section class="hero section-container">
@@ -46,6 +51,7 @@ function homeView() {
           <div class="hero-actions">
             <a class="button" href="/catalogo">Explorar catálogo</a>
             <a class="button button-secondary" href="/producto/${featured.id}">Ver destacado</a>
+            <button class="button button-secondary" id="btn-notifications" type="button">${notificationButtonText}</button>
           </div>
         </div>
         <div class="hero-product">

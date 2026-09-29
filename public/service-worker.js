@@ -165,3 +165,35 @@ self.addEventListener("fetch", (event) => {
   // Responde a la peticion usando la estrategia Cache First con guardado dinamico
   event.respondWith(cacheFirst(event.request));
 });
+
+// El Service Worker recibe la orden de mostrar la notificación
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SHOW_TEST_NOTIFICATION") {
+    // Muestra una notificación local de prueba
+    self.registration.showNotification("TechVolt", {
+      body: "Las notificaciones de TechVolt funcionan correctamente.",
+      icon: "./icons/icon-192.png"
+    });
+  }
+});
+
+// Detecta cuando el usuario hace clic en la notificación
+self.addEventListener("notificationclick", (event) => {
+  // Cierra la notificación
+  event.notification.close();
+
+  // Enfoca la ventana si ya está abierta o abre la página principal
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ("focus" in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow("./");
+      }
+    })
+  );
+});
+
