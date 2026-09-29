@@ -1,10 +1,14 @@
 import { initializeCart } from "./cart.js";
 import { renderRoute, navigateTo } from "./router.js";
 import { renderHeader, renderFooter } from "./components/layout.js";
+import { initConnectionStatus } from "./connectionStatus.js";
 
 // Renderiza los componentes compartidos de Header y Footer
 renderHeader();
 renderFooter();
+
+// Inicializa el detector de estado de conexión (offline/online)
+initConnectionStatus();
 
 function closeMenu() {
   const mainNav = document.querySelector("#main-nav");

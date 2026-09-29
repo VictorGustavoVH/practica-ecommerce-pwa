@@ -8,11 +8,10 @@
       content="TechVolt, accesorios tecnológicos para mejorar tu espacio y tu día a día."
     />
     <meta name="theme-color" content="#ffffff" />
+    <!-- Link del manifest para PWA -->
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/icons/icon-192.png" />
     <style>
-      /* Estilos críticos para evitar FOUC y ocultar el carrito antes de cargar el CSS */
-      .cart-panel:not(.is-open), .cart-overlay:not(.is-open) { display: none !important; }
     </style>
     <link rel="stylesheet" href="/src/style.css" />
     <title>TechVolt | Tecnología para tu día</title>
@@ -47,15 +46,6 @@
                 fetchpriority="high"
               />
             </a>
-            <div class="hero-product-info">
-              <div>
-                <p class="hero-product-title">Auriculares Inalámbricos Pro</p>
-                <strong>$1,799</strong>
-              </div>
-              <button class="button button-small add-to-cart" type="button" data-product-id="1">
-                Agregar al carrito
-              </button>
-            </div>
           </div>
         </section>
 

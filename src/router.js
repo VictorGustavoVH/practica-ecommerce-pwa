@@ -59,15 +59,6 @@ function homeView() {
               fetchpriority="high"
             />
           </a>
-          <div class="hero-product-info">
-            <div>
-              <p class="hero-product-title">${featured.name}</p>
-              <strong>${formatPrice.format(featured.price)}</strong>
-            </div>
-            <button class="button button-small add-to-cart" type="button" data-product-id="${featured.id}">
-              Agregar al carrito
-            </button>
-          </div>
         </div>
       </section>
 

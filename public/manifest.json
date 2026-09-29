@@ -9,10 +9,6 @@
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "lang": "es-MX",
-  "categories": [
-    "shopping",
-    "technology"
-  ],
   "icons": [
     {
       "src": "./icons/icon-192.png",

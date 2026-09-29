@@ -99,12 +99,21 @@ function renderCart() {
     return sum + product.price * item.quantity;
   }, 0);
 
-  countElement.textContent = itemCount;
-  cartButton.setAttribute(
-    "aria-label",
-    `Abrir carrito, ${itemCount} ${itemCount === 1 ? "producto" : "productos"}`
-  );
-  totalElement.textContent = formatPrice.format(total);
+  if (countElement) {
+    countElement.textContent = itemCount;
+    countElement.classList.remove("cart-count-bump");
+    void countElement.offsetWidth;
+    countElement.classList.add("cart-count-bump");
+  }
+  if (cartButton) {
+    cartButton.setAttribute(
+      "aria-label",
+      `Abrir carrito, ${itemCount} ${itemCount === 1 ? "producto" : "productos"}`
+    );
+  }
+  if (totalElement) {
+    totalElement.textContent = formatPrice.format(total);
+  }
 
   if (cart.length === 0) {
     itemsContainer.innerHTML = `

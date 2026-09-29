@@ -1,5 +1,5 @@
 // Nombre y version de la memoria cache (al cambiarla fuerza la actualizacion).
-const CACHE_NAME = "techvolt-cache-v9";
+const CACHE_NAME = "techvolt-cache-v2";
 
 // Archivos minimos estaticos de la interfaz (App Shell) para funcionar offline.
 const APP_SHELL = [
@@ -15,6 +15,7 @@ const APP_SHELL = [
 // Modulos y componentes que Vite sirve directamente durante desarrollo local (npm run dev).
 const DEVELOPMENT_MODULES = [
   "./src/main.js",
+  "./src/connectionStatus.js",
   "./src/router.js",
   "./src/components/layout.js",
   "./src/components/header.html",
