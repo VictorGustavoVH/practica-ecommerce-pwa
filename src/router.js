@@ -21,7 +21,7 @@ function productCard(product, highPriority = false) {
         <h3><a href="/producto/${product.id}">${product.name}</a></h3>
         <p class="product-description">${product.description}</p>
         <div class="product-card-footer">
-          <strong>${formatPrice.format(product.price)}</strong>
+          <strong class="tabular-numbers">${formatPrice.format(product.price)}</strong>
           <button class="button button-small add-to-cart" type="button" data-product-id="${product.id}">
             Agregar al carrito
           </button>
@@ -43,7 +43,7 @@ function homeView() {
     <div class="page-wrapper">
       <section class="hero section-container">
         <div class="hero-content">
-          <p class="eyebrow">Tecnología esencial</p>
+          <div class="hero-meta">Tecnología esencial</div>
           <h1>Mejora tu espacio con los accesorios correctos.</h1>
           <p class="hero-copy">
             Descubre productos prácticos para trabajar, crear y mantenerte conectado todos los días.
@@ -54,9 +54,9 @@ function homeView() {
             <button class="button button-secondary" id="btn-notifications" type="button">${notificationButtonText}</button>
           </div>
         </div>
-        <div class="hero-product">
-          <span class="hero-badge">Producto destacado</span>
-          <a class="product-image-link" href="/producto/${featured.id}" aria-label="Ver ${featured.name}">
+        <div class="hero-product-stage">
+          <span class="hero-tag">Destacado</span>
+          <a class="stage-link" href="/producto/${featured.id}" aria-label="Ver ${featured.name}">
             <img
               src="${featured.image}"
               alt="${featured.name}"
@@ -70,30 +70,33 @@ function homeView() {
 
       <section class="featured-section section-container" aria-labelledby="featured-title">
         <div class="section-heading">
-          <div>
-            <p class="eyebrow">Selección TechVolt</p>
+          <div class="section-heading-text">
             <h2 id="featured-title">Productos destacados</h2>
+            <span class="section-caption">Selección esencial para tu espacio</span>
           </div>
-          <a class="text-link" href="/catalogo">Ver catálogo completo <span aria-hidden="true">→</span></a>
+          <a class="text-link" href="/catalogo">
+            <span>Ver catálogo</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
-        <div class="product-grid product-grid-featured">
+        <div class="product-grid">
           ${PRODUCTOS.slice(0, 3).map((product, index) => productCard(product, index === 0)).join("")}
         </div>
       </section>
 
-      <section class="benefits" aria-label="Beneficios de TechVolt">
+      <section class="benefits-strip" aria-label="Beneficios de TechVolt">
         <div class="section-container benefits-grid">
-          <div>
-            <strong>Productos seleccionados</strong>
-            <span>Accesorios útiles y confiables para tu espacio</span>
+          <div class="benefit-item">
+            <span class="benefit-title">Productos seleccionados</span>
+            <span class="benefit-desc">Accesorios útiles y confiables para tu espacio</span>
           </div>
-          <div>
-            <strong>Compra sencilla</strong>
-            <span>Encuentra lo que necesitas con total claridad</span>
+          <div class="benefit-item">
+            <span class="benefit-title">Compra directa</span>
+            <span class="benefit-desc">Información clara y pedidos ágiles sin fricción</span>
           </div>
-          <div>
-            <strong>Siempre disponible</strong>
-            <span>Consulta el catálogo incluso sin conexión a internet</span>
+          <div class="benefit-item">
+            <span class="benefit-title">Siempre disponible</span>
+            <span class="benefit-desc">Consulta el catálogo incluso sin conexión a internet</span>
           </div>
         </div>
       </section>
@@ -106,9 +109,8 @@ function catalogView() {
     <div class="page-wrapper">
       <section class="page-section section-container" aria-labelledby="catalog-title">
         <div class="page-heading">
-          <p class="eyebrow">Colección completa</p>
           <h1 id="catalog-title">Catálogo TechVolt</h1>
-          <p class="page-copy">Seis accesorios elegidos para mejorar tu escritorio, entrenamiento y entretenimiento diario.</p>
+          <p class="page-copy">Seis accesorios diseñados para optimizar tu escritorio, entrenamiento y entretenimiento diario.</p>
         </div>
         <div class="catalog-summary" aria-label="Resumen del catálogo">
           <span>${PRODUCTOS.length} productos disponibles</span>
@@ -119,19 +121,19 @@ function catalogView() {
         </div>
       </section>
 
-      <section class="benefits" aria-label="Beneficios de TechVolt">
+      <section class="benefits-strip" aria-label="Beneficios de TechVolt">
         <div class="section-container benefits-grid">
-          <div>
-            <strong>Garantía oficial</strong>
-            <span>12 meses de cobertura en todos los productos</span>
+          <div class="benefit-item">
+            <span class="benefit-title">Garantía oficial</span>
+            <span class="benefit-desc">12 meses de cobertura en todos los productos</span>
           </div>
-          <div>
-            <strong>Envío inmediato</strong>
-            <span>Preparación y despacho rápido de tu pedido</span>
+          <div class="benefit-item">
+            <span class="benefit-title">Envío prioritario</span>
+            <span class="benefit-desc">Preparación y despacho inmediato de tu pedido</span>
           </div>
-          <div>
-            <strong>Soporte continuo</strong>
-            <span>Atención y asistencia técnica personalizada</span>
+          <div class="benefit-item">
+            <span class="benefit-title">Soporte técnico</span>
+            <span class="benefit-desc">Atención y resolución de dudas personalizada</span>
           </div>
         </div>
       </section>
@@ -145,9 +147,8 @@ function detailView(id) {
   if (!product) {
     return `
       <section class="empty-state section-container">
-        <p class="eyebrow">Error 404</p>
         <h1>Producto no encontrado</h1>
-        <p>El producto que buscas no existe o ya no está disponible en nuestro catálogo.</p>
+        <p>El accesorio que buscas no existe o ya no está disponible en nuestro catálogo.</p>
         <a class="button" href="/catalogo">Volver al catálogo</a>
       </section>
     `;
@@ -160,45 +161,48 @@ function detailView(id) {
       <section class="detail-page section-container">
         <nav class="breadcrumb" aria-label="Ruta de navegación">
           <a href="/">Inicio</a>
-          <span class="breadcrumb-separator" aria-hidden="true">/</span>
+          <svg class="breadcrumb-separator" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
           <a href="/catalogo">Catálogo</a>
-          <span class="breadcrumb-separator" aria-hidden="true">/</span>
+          <svg class="breadcrumb-separator" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
           <span aria-current="page">${product.name}</span>
         </nav>
 
         <div class="detail-layout">
-          <div class="detail-image">
+          <div class="detail-image-frame">
             <img src="${product.image}" alt="${product.name}" width="600" height="600" fetchpriority="high" />
           </div>
-          <div class="detail-content">
-            <p class="eyebrow">Accesorio tecnológico</p>
+          <div class="detail-info">
+            <span class="detail-category">Accesorio tecnológico</span>
             <h1>${product.name}</h1>
-            <p class="detail-price">${formatPrice.format(product.price)}</p>
+            <p class="detail-price tabular-numbers">${formatPrice.format(product.price)}</p>
             <p class="detail-description">${product.description}</p>
             
-            <ul class="detail-features">
-              <li>Diseño funcional optimizado para uso continuo</li>
-              <li>Materiales resistentes con acabado minimalista</li>
-              <li>Garantía oficial TechVolt de 12 meses</li>
+            <ul class="detail-spec-list">
+              <li class="detail-spec-item">Diseño funcional optimizado para uso continuo diario</li>
+              <li class="detail-spec-item">Materiales de alta durabilidad con acabado mate de precisión</li>
+              <li class="detail-spec-item">Garantía directa de 12 meses TechVolt incluida</li>
             </ul>
 
             <div class="detail-actions">
-              <button class="button detail-button add-to-cart" type="button" data-product-id="${product.id}">
+              <button class="button add-to-cart" type="button" data-product-id="${product.id}">
                 Agregar al carrito
               </button>
             </div>
-            <p class="detail-note">Disponibilidad inmediata con entrega rápida</p>
+            <p class="detail-note">Disponibilidad en almacén con entrega inmediata</p>
           </div>
         </div>
       </section>
 
       <section class="featured-section section-container" aria-labelledby="related-title">
         <div class="section-heading">
-          <div>
-            <p class="eyebrow">Recomendaciones</p>
-            <h2 id="related-title">Otros productos del catálogo</h2>
+          <div class="section-heading-text">
+            <h2 id="related-title">Recomendaciones</h2>
+            <span class="section-caption">Otros productos seleccionados</span>
           </div>
-          <a class="text-link" href="/catalogo">Ver todos <span aria-hidden="true">→</span></a>
+          <a class="text-link" href="/catalogo">
+            <span>Ver catálogo</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
         <div class="product-grid">
           ${related.map((item) => productCard(item, false)).join("")}

@@ -1,7 +1,7 @@
 import { resolve } from "path";
 
 export default {
-  base: "./",
+  base: "/",
   server: {
     host: "0.0.0.0",
     allowedHosts: [".ngrok-free.dev", ".ngrok-free.app", ".ngrok.app"]

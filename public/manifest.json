@@ -1,9 +1,10 @@
 {
+  "id": "/",
   "name": "TechVolt - Accesorios Tecnológicos",
   "short_name": "TechVolt",
   "description": "Tienda de accesorios tecnológicos esenciales para tu día a día.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
@@ -11,22 +12,52 @@
   "lang": "es-MX",
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-maskable.png",
+      "src": "/icons/icon-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot-desktop-home.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Pantalla de inicio de TechVolt en versión de escritorio"
+    },
+    {
+      "src": "/screenshots/screenshot-desktop-catalog.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Catálogo completo de accesorios en versión de escritorio"
+    },
+    {
+      "src": "/screenshots/screenshot-mobile-home.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Pantalla de inicio de TechVolt en versión móvil"
+    },
+    {
+      "src": "/screenshots/screenshot-mobile-catalog.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Catálogo de productos en versión móvil"
     }
   ],
   "shortcuts": [
@@ -34,10 +65,10 @@
       "name": "Inicio",
       "short_name": "Inicio",
       "description": "Página principal de TechVolt",
-      "url": "./",
+      "url": "/",
       "icons": [
         {
-          "src": "./icons/icon-192.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]
@@ -46,10 +77,10 @@
       "name": "Catálogo",
       "short_name": "Catálogo",
       "description": "Ver todos los productos",
-      "url": "./catalogo",
+      "url": "/catalogo",
       "icons": [
         {
-          "src": "./icons/icon-192.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]

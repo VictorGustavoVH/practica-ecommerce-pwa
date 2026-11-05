@@ -64,9 +64,20 @@ initializeCart();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
-      const serviceWorkerUrl = `${import.meta.env.BASE_URL}service-worker.js`;
-      const registration = await navigator.serviceWorker.register(serviceWorkerUrl);
-      console.log("Service Worker registrado correctamente:", registration.scope);
+      const swUrl = "/service-worker.js";
+      const registration = await navigator.serviceWorker.register(swUrl, { scope: "/" });
+      console.log("Service Worker registrado con scope:", registration.scope);
+
+      // Detecta si hay una nueva versión esperando activarse
+      registration.addEventListener("updatefound", () => {
+        const installingWorker = registration.installing;
+        if (!installingWorker) return;
+        installingWorker.addEventListener("statechange", () => {
+          if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+            console.log("Nueva versión disponible. Se actualizará en la próxima recarga.");
+          }
+        });
+      });
     } catch (error) {
       console.error("Error al registrar el Service Worker:", error);
     }

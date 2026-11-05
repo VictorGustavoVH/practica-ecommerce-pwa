@@ -1,16 +1,16 @@
 /* ==============================================================================
-   ESTILOS DEL ENCABEZADO (HEADER Y NAVEGACIÓN)
+   ESTILOS DEL ENCABEZADO (HEADER Y NAVEGACIÓN) - MONOCROMÁTICO
    ============================================================================== */
 
 .site-header {
   position: sticky;
   z-index: 30;
   top: 0;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border-subtle);
-  transition: border-color 150ms ease;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-hairline);
+  transition: border-color var(--dur-hover) ease;
 }
 
 .header-container {
@@ -21,34 +21,36 @@
   gap: 20px;
 }
 
+/* Identidad de Marca */
 .brand {
   display: inline-flex;
   align-items: center;
   justify-self: start;
   gap: 10px;
   font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-weight: 750;
+  letter-spacing: -0.03em;
   color: var(--text-primary);
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  transition: opacity var(--dur-hover) ease, transform var(--dur-hover) var(--ease-spring);
 }
 
 .brand:hover {
+  opacity: 0.8;
   transform: translateY(-1px);
-  opacity: 0.88;
 }
 
 .brand-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-frame);
   object-fit: contain;
 }
 
+/* Navegación Principal */
 .main-nav {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
 }
 
 .main-nav a {
@@ -58,11 +60,11 @@
   padding: 8px 4px;
   color: var(--text-secondary);
   font-size: 0.92rem;
-  font-weight: 500;
+  font-weight: 550;
   letter-spacing: -0.01em;
   text-decoration: none;
   background-color: transparent;
-  transition: color 0.25s ease;
+  transition: color var(--dur-hover) ease;
 }
 
 .main-nav a:hover {
@@ -71,77 +73,70 @@
 
 .main-nav a.active {
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 650;
 }
 
-/* Línea suave que parte desde el centro parte inferior hacia los costados */
+/* Indicador de pestaña activa / hover (línea minimalista inferior) */
 .main-nav a::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 50%;
+  left: 0;
   width: 100%;
   height: 2px;
-  background-color: var(--text-primary);
-  border-radius: var(--radius-pill);
-  transform: translateX(-50%) scaleX(0);
+  background-color: var(--mono-black);
+  transform: scaleX(0);
   transform-origin: center;
-  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform var(--dur-hover) var(--ease-spring);
 }
 
 .main-nav a:hover::after,
 .main-nav a.active::after {
-  transform: translateX(-50%) scaleX(1);
+  transform: scaleX(1);
 }
 
 .menu-button {
   display: none;
 }
 
+/* Botón del Carrito */
 .cart-button {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   justify-self: end;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   padding: 0;
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
   color: var(--text-primary);
-  background: var(--bg-surface);
+  background: var(--mono-white);
   cursor: pointer;
-  transition: border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    border-color var(--dur-hover) var(--ease-spring),
+    background-color var(--dur-hover) var(--ease-spring),
+    transform var(--dur-press) var(--ease-spring);
 }
 
 .cart-button:hover {
-  border-color: var(--text-primary);
-  background-color: var(--bg-subtle);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.09);
+  border-color: var(--mono-black);
+  background-color: var(--mono-100);
 }
 
 .cart-button:active {
-  transform: translateY(0);
+  transform: scale(0.95);
 }
 
 .cart-button svg {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.8;
-  transition: transform 0.2s ease;
-}
-
-.cart-button:hover svg {
-  transform: scale(1.05);
 }
 
 .cart-count {
@@ -152,35 +147,24 @@
   place-items: center;
   min-width: 20px;
   height: 20px;
-  padding-inline: 4px;
+  padding-inline: 5px;
   border-radius: var(--radius-pill);
-  color: #ffffff;
-  background: var(--accent-black);
+  color: var(--mono-white);
+  background: var(--mono-black);
   font-size: 0.72rem;
   font-weight: 700;
   line-height: 1;
-  border: 2px solid var(--bg-surface);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 2px solid var(--mono-white);
   pointer-events: none;
 }
 
-.cart-button:hover .cart-count {
-  transform: scale(1.12);
-}
-
-/* Responsividad del Header */
+/* Responsividad del Menú en Móviles */
 @media (max-width: 720px) {
   .header-container {
     position: relative;
     grid-template-columns: 1fr auto auto;
-    min-height: 62px;
+    min-height: 60px;
     gap: 12px;
-  }
-
-  .brand-icon {
-    width: 26px;
-    height: 26px;
   }
 
   .main-nav {
@@ -191,48 +175,33 @@
     display: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 2px;
-    padding: 8px;
-    border: 1px solid var(--border-subtle);
+    gap: 4px;
+    padding: 10px;
+    border: 1px solid var(--border-hairline);
     border-top: 0;
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
-    background: var(--bg-surface);
-    box-shadow: var(--shadow-hover);
+    background: var(--mono-white);
+    box-shadow: var(--shadow-lift);
   }
 
   .main-nav.is-open {
     display: flex;
+    animation: fadeSlideIn 180ms var(--ease-spring) both;
   }
 
   .main-nav a {
-    border-radius: var(--radius-sm);
-    text-align: left;
-    padding: 10px 14px;
+    padding: 12px 16px;
+    border-radius: var(--radius-frame);
     font-size: 0.95rem;
-    box-shadow: none;
   }
 
   .main-nav a::after {
-    bottom: 4px;
-    left: 14px;
-    width: calc(100% - 28px);
-    transform: scaleX(0);
-    transform-origin: center;
+    display: none;
   }
 
-  .main-nav a:hover {
-    color: var(--text-primary);
-    background-color: var(--bg-muted);
-  }
-
-  .main-nav a:hover::after,
-  .main-nav a.active::after {
-    transform: scaleX(1);
-  }
-
+  .main-nav a:hover,
   .main-nav a.active {
-    background-color: transparent;
-    font-weight: 600;
+    background: var(--mono-100);
+    color: var(--text-primary);
   }
 
   .menu-button {
@@ -241,17 +210,24 @@
     width: 42px;
     height: 42px;
     padding: 0;
-    border: 1px solid var(--border-default);
+    border: 1px solid var(--border-hairline);
     border-radius: var(--radius-pill);
     color: var(--text-primary);
-    background: var(--bg-surface);
+    background: var(--mono-white);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition:
+      border-color var(--dur-hover) var(--ease-spring),
+      background-color var(--dur-hover) var(--ease-spring),
+      transform var(--dur-press) var(--ease-spring);
   }
 
   .menu-button:hover {
-    background: var(--bg-subtle);
-    border-color: var(--text-primary);
+    border-color: var(--mono-black);
+    background-color: var(--mono-100);
+  }
+
+  .menu-button:active {
+    transform: scale(0.95);
   }
 
   .menu-button svg {
@@ -260,6 +236,7 @@
     fill: none;
     stroke: currentColor;
     stroke-linecap: round;
+    stroke-linejoin: round;
     stroke-width: 2;
   }
 }

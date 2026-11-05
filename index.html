@@ -7,12 +7,20 @@
       name="description"
       content="TechVolt, accesorios tecnológicos para mejorar tu espacio y tu día a día."
     />
+    <!-- Metadatos de Instalabilidad y PWA -->
     <meta name="theme-color" content="#ffffff" />
-    <meta name="robots" content="index, follow" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="TechVolt" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png" />
+
     <!-- Link del manifest para PWA -->
     <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" href="/icons/icon-192.png" />
+    <link rel="icon" type="image/png" href="/icons/icon-192.png" />
     <style>
+      .cart-panel:not(.is-open), .cart-overlay:not(.is-open) { display: none !important; }
     </style>
     <link rel="stylesheet" href="/src/style.css" />
     <title>TechVolt | Tecnología para tu día</title>
@@ -21,12 +29,12 @@
     <!-- Encabezado inyectado dinámicamente por JavaScript -->
     <header id="site-header" class="site-header"></header>
 
-    <!-- Contenido del Inicio renderizado por defecto para carga instantánea en PWA móvil -->
+    <!-- Contenido del Inicio renderizado para carga instantánea en PWA móvil -->
     <main id="app" tabindex="-1">
       <div class="page-wrapper">
         <section class="hero section-container">
           <div class="hero-content">
-            <p class="eyebrow">Tecnología esencial</p>
+            <div class="hero-meta">Tecnología esencial</div>
             <h1>Mejora tu espacio con los accesorios correctos.</h1>
             <p class="hero-copy">
               Descubre productos prácticos para trabajar, crear y mantenerte conectado todos los días.
@@ -37,9 +45,9 @@
               <button class="button button-secondary" id="btn-notifications" type="button">Activar notificaciones</button>
             </div>
           </div>
-          <div class="hero-product">
-            <span class="hero-badge">Producto destacado</span>
-            <a class="product-image-link" href="/producto/1" aria-label="Ver Auriculares Inalámbricos Pro">
+          <div class="hero-product-stage">
+            <span class="hero-tag">Destacado</span>
+            <a class="stage-link" href="/producto/1" aria-label="Ver Auriculares Inalámbricos Pro">
               <img
                 src="/images/producto-1.webp"
                 alt="Auriculares Inalámbricos Pro"
@@ -51,19 +59,82 @@
           </div>
         </section>
 
-        <section class="benefits" aria-label="Beneficios de TechVolt">
+        <section class="featured-section section-container" aria-labelledby="featured-title">
+          <div class="section-heading">
+            <div class="section-heading-text">
+              <h2 id="featured-title">Productos destacados</h2>
+              <span class="section-caption">Selección esencial para tu espacio</span>
+            </div>
+            <a class="text-link" href="/catalogo">
+              <span>Ver catálogo</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+          <div class="product-grid">
+            <article class="product-card">
+              <a class="product-image-link" href="/producto/1" aria-label="Ver Auriculares Inalámbricos Pro">
+                <img src="/images/producto-1.webp" alt="Auriculares Inalámbricos Pro" width="600" height="600" loading="eager" fetchpriority="high" />
+              </a>
+              <div class="product-card-body">
+                <p class="product-category">Accesorio tecnológico</p>
+                <h3><a href="/producto/1">Auriculares Inalámbricos Pro</a></h3>
+                <p class="product-description">Cancelación activa de ruido y batería de 30 horas con sonido de alta fidelidad.</p>
+                <div class="product-card-footer">
+                  <strong class="tabular-numbers">$1,799</strong>
+                  <button class="button button-small add-to-cart" type="button" data-product-id="1">
+                    Agregar al carrito
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card">
+              <a class="product-image-link" href="/producto/2" aria-label="Ver Teclado Mecánico Compacto">
+                <img src="/images/producto-2.webp" alt="Teclado Mecánico Compacto" width="600" height="600" loading="lazy" />
+              </a>
+              <div class="product-card-body">
+                <p class="product-category">Accesorio tecnológico</p>
+                <h3><a href="/producto/2">Teclado Mecánico Compacto</a></h3>
+                <p class="product-description">Switches táctiles de respuesta rápida con retroiluminación personalizable.</p>
+                <div class="product-card-footer">
+                  <strong class="tabular-numbers">$2,399</strong>
+                  <button class="button button-small add-to-cart" type="button" data-product-id="2">
+                    Agregar al carrito
+                  </button>
+                </div>
+              </div>
+            </article>
+            <article class="product-card">
+              <a class="product-image-link" href="/producto/3" aria-label="Ver Mouse Ergonómico Precision">
+                <img src="/images/producto-3.webp" alt="Mouse Ergonómico Precision" width="600" height="600" loading="lazy" />
+              </a>
+              <div class="product-card-body">
+                <p class="product-category">Accesorio tecnológico</p>
+                <h3><a href="/producto/3">Mouse Ergonómico Precision</a></h3>
+                <p class="product-description">Sensor óptico de alta precisión y diseño ergonómico para largas jornadas.</p>
+                <div class="product-card-footer">
+                  <strong class="tabular-numbers">$999</strong>
+                  <button class="button button-small add-to-cart" type="button" data-product-id="3">
+                    Agregar al carrito
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="benefits-strip" aria-label="Beneficios de TechVolt">
           <div class="section-container benefits-grid">
-            <div>
-              <strong>Productos seleccionados</strong>
-              <span>Accesorios útiles y confiables para tu espacio</span>
+            <div class="benefit-item">
+              <span class="benefit-title">Productos seleccionados</span>
+              <span class="benefit-desc">Accesorios útiles y confiables para tu espacio</span>
             </div>
-            <div>
-              <strong>Compra sencilla</strong>
-              <span>Encuentra lo que necesitas con total claridad</span>
+            <div class="benefit-item">
+              <span class="benefit-title">Compra directa</span>
+              <span class="benefit-desc">Información clara y pedidos ágiles sin fricción</span>
             </div>
-            <div>
-              <strong>Siempre disponible</strong>
-              <span>Consulta el catálogo incluso sin conexión a internet</span>
+            <div class="benefit-item">
+              <span class="benefit-title">Siempre disponible</span>
+              <span class="benefit-desc">Consulta el catálogo incluso sin conexión a internet</span>
             </div>
           </div>
         </section>
@@ -85,8 +156,7 @@
       inert
     >
       <div class="cart-panel-header">
-        <div>
-          <p class="eyebrow">Tu selección</p>
+        <div class="cart-panel-title-group">
           <h2 id="cart-title">Carrito</h2>
         </div>
         <button class="icon-button" id="cart-close" type="button" aria-label="Cerrar carrito">
@@ -100,10 +170,10 @@
 
       <div class="cart-summary" id="cart-summary">
         <div>
-          <span>Total</span>
+          <span>Total estimado</span>
           <strong id="cart-total">$0</strong>
         </div>
-        <p>Impuestos incluidos. No se realizará ningún pago real.</p>
+        <p>Impuestos incluidos. No se realizará ningún cobro real.</p>
       </div>
     </aside>
     <p class="sr-only" id="cart-status" role="status" aria-live="polite"></p>

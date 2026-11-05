@@ -1,199 +1,163 @@
-// Nombre y version de la memoria cache (al cambiarla fuerza la actualizacion).
-const CACHE_NAME = "techvolt-cache-v2";
+const CACHE_NAME = "techvolt-cache-v7";
 
-// Archivos minimos estaticos de la interfaz (App Shell) para funcionar offline.
 const APP_SHELL = [
-  "./",
-  "./index.html",
-  "./catalogo.html",
-  "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-maskable.png"
+  "/",
+  "/index.html",
+  "/catalogo.html",
+  "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/icon-maskable.png",
+  "/images/producto-1.webp",
+  "/images/producto-2.webp",
+  "/images/producto-3.webp",
+  "/images/producto-4.webp",
+  "/images/producto-5.webp",
+  "/images/producto-6.webp",
+  "/screenshots/screenshot-desktop-home.webp",
+  "/screenshots/screenshot-desktop-catalog.webp",
+  "/screenshots/screenshot-mobile-home.webp",
+  "/screenshots/screenshot-mobile-catalog.webp"
 ];
 
-// Modulos y componentes que Vite sirve directamente durante desarrollo local (npm run dev).
-const DEVELOPMENT_MODULES = [
-  "./src/main.js",
-  "./src/connectionStatus.js",
-  "./src/router.js",
-  "./src/components/layout.js",
-  "./src/components/header.html",
-  "./src/components/footer.html",
-  "./src/cart.js",
-  "./src/products.js",
-  "./src/style.css",
-  "./src/styles/header.css",
-  "./src/styles/footer.css",
-  "./src/styles/catalogo.css"
-];
-
-// Guarda una lista de archivos en cache de forma segura sin cancelar si alguno no existe.
+// Almacena recursos en cache de forma resiliente
 async function cacheAvailableResources(cache, resources) {
-  // Descarga y guarda todos los recursos en paralelo
   await Promise.all(
     resources.map(async (resource) => {
       try {
-        // Intenta agregar el recurso a la cache
         await cache.add(resource);
-      } catch {
-        // Si el archivo no existe en el entorno actual, lo ignora silenciosamente
+      } catch (err) {
+        // Ignora recursos opcionales o faltantes en entornos de prueba
       }
     })
   );
 }
 
-// Lee index.html y catalogo.html para detectar y guardar los archivos compilados con hash generados por Vite.
+// Extrae del HTML los assets con hash generados por el build de Vite
 async function cacheViteBuildAssets(cache) {
-  const pages = ["./index.html", "./catalogo.html"];
+  const pages = ["/index.html", "/catalogo.html"];
   for (const page of pages) {
     try {
-      // 1. Descarga el archivo HTML sin guardar en cache temporal
       const pageResponse = await fetch(page, { cache: "no-store" });
       if (!pageResponse.ok) continue;
 
-      // 2. Extrae el codigo HTML en formato texto
       const html = await pageResponse.text();
-
-      // 3. Expresion regular para buscar rutas en etiquetas src="..." o href="..."
       const resourcePattern = /(?:src|href)=["']([^"']+)["']/g;
 
-      // 4. Filtra unicamente las rutas que pertenezcan a la carpeta /assets/ del mismo dominio
       const assetUrls = [...html.matchAll(resourcePattern)]
-        .map((match) => new URL(match[1], self.location.href))
+        .map((match) => new URL(match[1], self.location.origin))
         .filter((url) => url.origin === self.location.origin && url.pathname.includes("/assets/"));
 
-      // 5. Guarda todos los archivos compilados encontrados en la cache
       await cacheAvailableResources(cache, assetUrls.map((url) => url.href));
     } catch {
-      // Si la pagina no esta disponible, continua con la siguiente
+      // Continuar con el siguiente si falla
     }
   }
 }
 
-// Evento Install: Se ejecuta al instalar el Service Worker para precargar los recursos esenciales.
+// Install: precaching de App Shell y assets de produccion
 self.addEventListener("install", (event) => {
-  // Espera a que termine de guardar todo antes de completar la instalacion
   event.waitUntil(
     caches
       .open(CACHE_NAME)
       .then(async (cache) => {
-        // 1. Guarda los archivos estaticos base del App Shell
-        await cache.addAll(APP_SHELL);
-        // 2. Guarda modulos y componentes de desarrollo si existen
-        await cacheAvailableResources(cache, DEVELOPMENT_MODULES);
-        // 3. Guarda archivos compilados de produccion si existen
+        await cacheAvailableResources(cache, APP_SHELL);
         await cacheViteBuildAssets(cache);
       })
-      // Activa el Service Worker de inmediato sin esperar a reiniciar la pestaña
       .then(() => self.skipWaiting())
   );
 });
 
-// Evento Activate: Se ejecuta al activar el Service Worker y elimina versiones viejas de cache.
+// Activate: limpieza de versiones viejas de cache
 self.addEventListener("activate", (event) => {
-  // Espera a completar la limpieza de caches obsoletas
   event.waitUntil(
     caches
       .keys()
-      .then((cacheNames) => Promise.all(
-        cacheNames
-          // Filtra las caches viejas que no coincidan con la version actual
-          .filter((cacheName) => cacheName !== CACHE_NAME)
-          // Borra cada cache antigua encontrada
-          .map((cacheName) => caches.delete(cacheName))
-      ))
-      // Toma el control inmediato de todas las pestañas abiertas
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((name) => name !== CACHE_NAME)
+            .map((name) => caches.delete(name))
+        )
+      )
       .then(() => self.clients.claim())
   );
 });
 
-// Estrategia Cache First con entrega instantánea de navegación (App Shell Architecture).
-async function cacheFirst(request) {
-  // 1. En navegaciones (cambios de pantalla), entrega el App Shell de inmediato desde caché
-  if (request.mode === "navigate") {
-    const cachedPage = await caches.match(request);
-    if (cachedPage) return cachedPage;
-
-    // Si la ruta solicitada contiene 'catalogo', usa catalogo.html o index.html
-    const isCatalog = request.url.includes("catalogo");
-    const shell = isCatalog
-      ? (await caches.match("./catalogo.html") || await caches.match("./index.html") || await caches.match("./"))
-      : (await caches.match("./index.html") || await caches.match("./") || await caches.match("./catalogo.html"));
-
-    if (shell) return shell;
+// Manejo de peticiones de navegacion (HTML SPA): Network First con fallback a Cache
+async function handleNavigation(request) {
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse && networkResponse.ok) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, networkResponse.clone());
+      return networkResponse;
+    }
+  } catch {
+    // Sin red: recurre a la cache
   }
 
-  // 2. Busca recursos estáticos (imágenes, scripts, css) en caché
+  const cachedPage = await caches.match(request);
+  if (cachedPage) return cachedPage;
+
+  const isCatalog = request.url.includes("catalogo");
+  const fallbackShell = isCatalog
+    ? (await caches.match("/catalogo.html")) || (await caches.match("/index.html")) || (await caches.match("/"))
+    : (await caches.match("/index.html")) || (await caches.match("/")) || (await caches.match("/catalogo.html"));
+
+  return fallbackShell || Response.error();
+}
+
+// Manejo de recursos estaticos: Cache First con actualizacion en segundo plano
+async function handleStaticAsset(request) {
   const cachedResponse = await caches.match(request);
   if (cachedResponse) {
     return cachedResponse;
   }
 
   try {
-    // 3. Si no está en caché, solicita el recurso a la red
     const networkResponse = await fetch(request);
-
-    // Guarda dinámicamente en caché los recursos solicitados válidos
-    if (networkResponse.ok && networkResponse.type === "basic") {
+    if (networkResponse && networkResponse.ok && (networkResponse.type === "basic" || networkResponse.type === "cors")) {
       const cache = await caches.open(CACHE_NAME);
-      await cache.put(request, networkResponse.clone());
+      cache.put(request, networkResponse.clone());
     }
-
     return networkResponse;
   } catch (error) {
-    // 4. Fallback de emergencia si la red falla durante la navegación
-    if (request.mode === "navigate") {
-      const fallback = await caches.match("./index.html") || await caches.match("./");
-      if (fallback) return fallback;
-    }
-
     throw error;
   }
 }
 
-// Evento Fetch: Intercepta todas las peticiones de red que hace la aplicacion.
 self.addEventListener("fetch", (event) => {
-  // Ignora peticiones que no sean GET (como POST o PUT)
   if (event.request.method !== "GET") return;
 
   const requestUrl = new URL(event.request.url);
-
-  // Ignora peticiones hacia servidores o dominios externos
   if (requestUrl.origin !== self.location.origin) return;
 
-  // Responde a la peticion usando la estrategia Cache First con guardado dinamico
-  event.respondWith(cacheFirst(event.request));
+  if (event.request.mode === "navigate") {
+    event.respondWith(handleNavigation(event.request));
+  } else {
+    event.respondWith(handleStaticAsset(event.request));
+  }
 });
 
-// El Service Worker recibe la orden de mostrar la notificación
+// Manejo de notificaciones locales de prueba
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SHOW_TEST_NOTIFICATION") {
-    // Muestra una notificación local de prueba
     self.registration.showNotification("TechVolt", {
       body: "Las notificaciones de TechVolt funcionan correctamente.",
-      icon: "./icons/icon-192.png"
+      icon: "/icons/icon-192.png"
     });
   }
 });
 
-// Detecta cuando el usuario hace clic en la notificación
 self.addEventListener("notificationclick", (event) => {
-  // Cierra la notificación
   event.notification.close();
-
-  // Enfoca la ventana si ya está abierta o abre la página principal
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if ("focus" in client) {
-          return client.focus();
-        }
+        if ("focus" in client) return client.focus();
       }
-      if (clients.openWindow) {
-        return clients.openWindow("./");
-      }
+      if (clients.openWindow) return clients.openWindow("/");
     })
   );
 });
-

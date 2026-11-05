@@ -52,7 +52,7 @@ function cartItemTemplate(item) {
 
   return `
     <article class="cart-item">
-      <img src="${product.image}" alt="" width="88" height="88" />
+      <img src="${product.image}" alt="" width="72" height="72" />
       <div class="cart-item-content">
         <div class="cart-item-heading">
           <h3>${product.name}</h3>
@@ -66,7 +66,7 @@ function cartItemTemplate(item) {
             Eliminar
           </button>
         </div>
-        <p>${formatPrice.format(product.price)}</p>
+        <p class="tabular-numbers">${formatPrice.format(product.price)}</p>
         <div class="quantity-control" aria-label="Cantidad de ${product.name}">
           <button
             type="button"
